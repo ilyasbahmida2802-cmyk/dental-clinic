@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عيادة الابتسامة</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        *{box-sizing:border-box}
+        body{background:linear-gradient(135deg,#e0f7fa,#f8f9fa);font-family:'Segoe UI',Tahoma,Arial,sans-serif;min-height:100vh;padding-bottom:30px}
+        .landing-page{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;position:relative}
+        .landing-logo{font-size:5rem;margin-bottom:20px;animation:bounce 2s infinite}
+        @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+        .landing-title{font-size:2.5rem;font-weight:bold;color:#0083b0;margin-bottom:10px}
+        .landing-subtitle{color:#666;margin-bottom:40px;font-size:1.1rem}
+        .landing-cards{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;max-width:900px}
+        .landing-card{background:#fff;border-radius:20px;padding:35px 25px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.1);cursor:pointer;transition:all .3s;flex:1;min-width:250px;max-width:300px}
+        .landing-card:hover{transform:translateY(-10px);box-shadow:0 15px 40px rgba(0,0,0,.15)}
+        .landing-card .icon{font-size:3.5rem;margin-bottom:15px}
+        .landing-card h3{color:#0083b0;margin-bottom:12px;font-size:1.3rem}
+        .landing-card p{color:#666;margin-bottom:15px;font-size:.9rem}
+        .landing-card.patient .icon{color:#28a745}
+        .landing-card.doctor .icon{color:#dc3545}
+        .landing-card.manager .icon{color:#6f42c1}
+        .db-status{position:absolute;top:15px;left:15px;padding:5px 12px;border-radius:20px;font-size:.75rem;font-weight:bold}
+        .db-status.connected{background:#d4edda;color:#155724}
+        .db-status.disconnected{background:#f8d7da;color:#721c24}
+        .header{background:linear-gradient(135deg,#00b4db,#0083b0);color:#fff;padding:20px 15px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.15);margin-bottom:25px;position:relative}
+        .header h1{margin:0;font-size:1.6rem;font-weight:bold}
+        .header p{margin:5px 0 0;opacity:.9;font-size:.95rem}
+        .back-btn{position:absolute;top:20px;right:15px;background:rgba(255,255,255,.2);border:none;color:#fff;padding:8px 15px;border-radius:8px;cursor:pointer}
+        .card{border:none;border-radius:15px;box-shadow:0 4px 15px rgba(0,0,0,.08);background:#fff;margin-bottom:20px}
+        .card-title{color:#0083b0;font-weight:bold;margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid #e0f7fa}
+        .btn-primary{background:linear-gradient(135deg,#00b4db,#0083b0);border:none;font-weight:bold;padding:10px;border-radius:10px}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:20px}
+        .stats-card{color:#fff;border-radius:15px;padding:18px 12px;text-align:center}
+        .stats-card.blue{background:linear-gradient(135deg,#00b4db,#0083b0)}
+        .stats-card.green{background:linear-gradient(135deg,#28a745,#20893a)}
+        .stats-card.orange{background:linear-gradient(135deg,#fd7e14,#e8590c)}
+        .stats-card.red{background:linear-gradient(135deg,#dc3545,#c82333)}
+        .stats-card.purple{background:linear-gradient(135deg,#6f42c1,#5a32a3)}
+        .stats-card .number{font-size:1.8rem;font-weight:bold}
+        .stats-card .label{font-size:.8rem;opacity:.9;margin-top:5px}
+        .appt-card{background:#fff;border-radius:12px;padding:15px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.08);border-right:4px solid #00b4db;position:relative}
+        .appt-card.status-confirmed{border-right-color:#28a745}
+        .appt-card.status-pending{border-right-color:#ffc107}
+        .appt-card.status-cancelled{border-right-color:#dc3545;opacity:.7}
+        .appt-card.status-completed{border-right-color:#6c757d}
+        .appt-card.has-notes{background:linear-gradient(to left,#fff9e6,#fff)}
+        .appt-card.has-notes::before{content:'📝';position:absolute;top:10px;left:10px;font-size:1.2rem}
+        .appt-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;flex-wrap:wrap;gap:10px}
+        .patient-info h5{margin:0;color:#0083b0;font-size:1.1rem}
+        .patient-info small{color:#666}
+        .appt-details{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:10px 0;font-size:.9rem}
+        .detail-item{display:flex;align-items:center;gap:5px}
+        .detail-item i{color:#00b4db}
+        .badge-status{padding:5px 12px;border-radius:20px;font-size:.8rem;font-weight:bold}
+        .badge-status.confirmed{background:#d4edda;color:#155724}
+        .badge-status.pending{background:#fff3cd;color:#856404}
+        .badge-status.cancelled{background:#f8d7da;color:#721c24}
+        .badge-status.completed{background:#e2e3e5;color:#383d41}
+        .badge-visit{padding:5px 12px;border-radius:20px;font-size:.8rem;font-weight:bold}
+        .badge-visit.first{background:#cce5ff;color:#004085}
+        .badge-visit.followup{background:#d4edda;color:#155724}
+        .badge-doc{background:linear-gradient(135deg,#6f42c1,#5a32a3);color:#fff;padding:5px 12px;border-radius:20px;font-size:.8rem;font-weight:bold;display:inline-block}
+        .notes-preview{background:#fff3cd;border-right:3px solid #ffc107;padding:8px 12px;border-radius:8px;margin:10px 0;font-size:.85rem;color:#856404}
+        .appt-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+        .appt-actions button{flex:1;min-width:90px;font-size:.82rem;padding:6px 10px}
+        .whatsapp-btn{background:#25D366!important;color:#fff!important;border:none!important}
+        .whatsapp-btn:hover{background:#128C7E!important;color:#fff!important}
+        .toast-box{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;width:90%;max-width:400px}
+        .modal-content{border-radius:15px;border:none}
+        .modal-header{background:linear-gradient(135deg,#00b4db,#0083b0);color:#fff;border-radius:15px 15px 0 0}
+        .modal-header.h-notes{background:linear-gradient(135deg,#ffc107,#e0a800)}
+        .modal-header.h-doc{background:linear-gradient(135deg,#6f42c1,#5a32a3)}
+        .modal-header.h-mgr{background:linear-gradient(135deg,#dc3545,#c82333)}
+        .modal-header .btn-close{filter:invert(1)}
+        .quick-notes{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:15px}
+        .qn-btn{background:#e0f7fa;border:1px solid #00b4db;color:#0083b0;padding:5px 12px;border-radius:15px;font-size:.8rem;cursor:pointer}
+        .qn-btn:hover{background:#00b4db;color:#fff}
+        .doc-card{background:#fff;border-radius:12px;padding:15px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.08);border-right:4px solid #6f42c1;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+        .doc-card h5{margin:0;color:#6f42c1;font-size:1.1rem}
+        .doc-card small{color:#666}
+        .doc-card .doc-actions{display:flex;gap:5px}
+        .loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,.95);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:99999}
+        .spinner{width:50px;height:50px;border:5px solid #e0f7fa;border-top-color:#00b4db;border-radius:50%;animation:spin 1s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .hidden{display:none!important}
+        @media(max-width:576px){.landing-title{font-size:1.8rem}.landing-logo{font-size:3.5rem}.stats-card .number{font-size:1.3rem}}
+    </style>
+</head>
+<body>
+
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="spinner"></div>
+    <p class="mt-3 text-primary fw-bold">جاري الاتصال بـ Firebase...</p>
+</div>
+
+<div id="landingPage" class="landing-page hidden">
+    <span id="dbStatus" class="db-status disconnected">⏳ جاري الاتصال</span>
+    <div class="landing-logo">🦷</div>
+    <h1 class="landing-title">عيادة الابتسامة</h1>
+    <p class="landing-subtitle">النظام الشامل لإدارة العيادة</p>
+    <div class="landing-cards">
+        <div class="landing-card patient" onclick="showPage('patientPage')">
+            <div class="icon"><i class="bi bi-person-circle"></i></div>
+            <h3>واجهة المريض</h3>
+            <p>حجز موعد جديد</p>
+            <button class="btn btn-success">دخول كمريض</button>
+        </div>
+        <div class="landing-card doctor" onclick="showDoctorLogin()">
+            <div class="icon"><i class="bi bi-person-badge"></i></div>
+            <h3>واجهة الطبيب</h3>
+            <p>إدارة المواعيد</p>
+            <button class="btn btn-danger">دخول كطبيب</button>
+        </div>
+        <div class="landing-card manager" onclick="showManagerLogin()">
+            <div class="icon"><i class="bi bi-shield-lock"></i></div>
+            <h3>واجهة المدير</h3>
+            <p>إدارة الأطباء والنظام</p>
+            <button class="btn" style="background:#6f42c1;color:#fff">دخول كمدير</button>
+        </div>
+    </div>
+</div>
+
+<!-- صفحة المريض -->
+<div id="patientPage" class="hidden">
+    <div class="header">
+        <button class="back-btn" onclick="showPage('landingPage')"><i class="bi bi-arrow-right"></i> رجوع</button>
+        <h1>🦷 واجهة المريض</h1>
+        <p>حجز موعد جديد</p>
+    </div>
+    <div class="container">
+        <div class="toast-box" id="patientToast"></div>
+        <div class="card p-3">
+            <h5 class="card-title"><i class="bi bi-calendar-plus"></i> حجز موعد جديد</h5>
+            <form id="bookingForm">
+                <div class="mb-3"><label class="form-label fw-bold">الاسم الكامل</label><input type="text" id="p_name" class="form-control" required></div>
+                <div class="mb-3"><label class="form-label fw-bold">رقم الهاتف (واتساب)</label><input type="tel" id="p_phone" class="form-control" required pattern="[0-9]{10,15}" placeholder="مثال: 966500000000"></div>
+                <div class="mb-3"><label class="form-label fw-bold">اختر الطبيب</label><select id="p_doctor" class="form-select" required></select></div>
+                <div class="mb-3"><label class="form-label fw-bold">نوع الزيارة</label>
+                    <select id="p_visit" class="form-select" required onchange="checkHistory()">
+                        <option value="">اختر</option><option value="first">زيارة أولى</option><option value="followup">متابعة / استكمال علاج</option>
+                    </select>
+                </div>
+                <div class="mb-3 hidden" id="prevContainer"><div id="prevVisits" class="alert alert-info"></div></div>
+                <div class="mb-3"><label class="form-label fw-bold">التاريخ</label><select id="p_date" class="form-select" required></select></div>
+                <div class="mb-3"><label class="form-label fw-bold">الوقت</label><select id="p_time" class="form-select" required></select></div>
+                <div class="mb-3"><label class="form-label fw-bold">نوع الخدمة</label>
+                    <select id="p_service" class="form-select" required>
+                        <option value="">اختر الخدمة</option>
+                        <option value="فحص عام">فحص عام</option>
+                        <option value="تنظيف أسنان">تنظيف أسنان</option>
+                        <option value="حشو">حشو</option>
+                        <option value="خلع">خلع</option>
+                        <option value="تقويم">تقويم</option>
+                        <option value="تجميل">تجميل</option>
+                        <option value="علاج عصب">علاج عصب</option>
+                        <option value="زراعة أسنان">زراعة أسنان</option>
+                        <option value="تبييض">تبييض</option>
+                    </select>
+                </div>
+                <div class="mb-3"><label class="form-label fw-bold">ملاحظات</label><textarea id="p_notes" class="form-control" rows="2"></textarea></div>
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-check-circle"></i> تأكيد الحجز</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- صفحة الطبيب -->
+<div id="doctorPage" class="hidden">
+    <div class="header">
+        <button class="back-btn" onclick="logoutDoctor()"><i class="bi bi-box-arrow-right"></i> خروج</button>
+        <h1>‍⚕️ لوحة تحكم الطبيب</h1>
+        <p id="currentDoctorName">مرحباً بك</p>
+    </div>
+    <div class="container">
+        <div class="toast-box" id="doctorToast"></div>
+        <div class="stats-grid">
+            <div class="stats-card blue"><div class="number" id="d_total">0</div><div class="label">إجمالي</div></div>
+            <div class="stats-card green"><div class="number" id="d_confirmed">0</div><div class="label">مؤكدة</div></div>
+            <div class="stats-card orange"><div class="number" id="d_pending">0</div><div class="label">انتظار</div></div>
+            <div class="stats-card red"><div class="number" id="d_today">0</div><div class="label">اليوم</div></div>
+            <div class="stats-card purple"><div class="number" id="d_notes">0</div><div class="label">ملاحظات</div></div>
+        </div>
+        <div class="card p-3">
+            <h5 class="card-title"><i class="bi bi-funnel"></i> تصفية</h5>
+            <div class="row g-2">
+                <div class="col-6"><select id="fStatus" class="form-select" onchange="renderDocAppts()"><option value="all">جميع الحالات</option><option value="pending">انتظار</option><option value="confirmed">مؤكدة</option><option value="completed">منجزة</option><option value="cancelled">ملغاة</option></select></div>
+                <div class="col-6"><input type="date" id="fDate" class="form-control" onchange="renderDocAppts()"></div>
+                <div class="col-12"><input type="text" id="fSearch" class="form-control" placeholder="🔍 بحث بالاسم أو الهاتف" oninput="renderDocAppts()"></div>
+            </div>
+        </div>
+        <div class="card p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title mb-0"><i class="bi bi-list-check"></i> المواعيد</h5>
+            </div>
+            <div id="docAppts"></div>
+        </div>
+    </div>
+</div>
+
+<!-- صفحة المدير -->
+<div id="managerPage" class="hidden">
+    <div class="header" style="background:linear-gradient(135deg,#dc3545,#c82333)">
+        <button class="back-btn" onclick="logoutManager()"><i class="bi bi-box-arrow-right"></i> خروج</button>
+        <h1>🛡️ لوحة تحكم المدير</h1>
+        <p>إدارة الأطباء والنظام</p>
+    </div>
+    <div class="container">
+        <div class="toast-box" id="managerToast"></div>
+        <div class="stats-grid">
+            <div class="stats-card purple"><div class="number" id="m_doctors">0</div><div class="label">عدد الأطباء</div></div>
+            <div class="stats-card blue"><div class="number" id="m_appts">0</div><div class="label">إجمالي المواعيد</div></div>
+            <div class="stats-card green"><div class="number" id="m_today">0</div><div class="label">مواعيد اليوم</div></div>
+        </div>
+        <div class="card p-3">
+            <h5 class="card-title"><i class="bi bi-people-fill"></i> إدارة الأطباء</h5>
+            <button class="btn btn-primary w-100 mb-3" onclick="showAddDoctorForm()">
+                <i class="bi bi-plus-circle"></i> إضافة طبيب جديد
+            </button>
+            <div id="managerDocsList"></div>
+        </div>
+        <div class="card p-3">
+            <h5 class="card-title"><i class="bi bi-list-check"></i> جميع المواعيد</h5>
+            <div id="managerAppts"></div>
+        </div>
+        <div class="card p-3">
+            <h5 class="card-title"><i class="bi bi-gear"></i> الإعدادات</h5>
+            <button class="btn btn-outline-primary w-100 mb-2" onclick="showChangeManagerPwd()">
+                <i class="bi bi-key"></i> تغيير كلمة مرور المدير
+            </button>
+            <button class="btn btn-outline-success w-100 mb-2" onclick="exportData()">
+                <i class="bi bi-download"></i> تصدير البيانات
+            </button>
+            <button class="btn btn-outline-info w-100" onclick="document.getElementById('importFile').click()">
+                <i class="bi bi-upload"></i> استيراد البيانات
+            </button>
+            <input type="file" id="importFile" class="hidden" accept=".json" onchange="importData(event)">
+        </div>
+    </div>
+</div>
+
+<!-- Modal دخول الطبيب -->
+<div class="modal fade" id="doctorLoginModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-person-badge"></i> دخول الطبيب</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">اختر اسمك</label>
+                    <select id="docLoginName" class="form-select"></select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">كلمة المرور</label>
+                    <input type="password" id="docLoginPwd" class="form-control" placeholder="••••••••">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-danger" onclick="loginDoctor()">دخول</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal دخول المدير -->
+<div class="modal fade" id="managerLoginModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header h-mgr">
+                <h5 class="modal-title"><i class="bi bi-shield-lock"></i> دخول المدير</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">كلمة المرور</label>
+                    <input type="password" id="mgrLoginPwd" class="form-control" placeholder="••••••••">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-danger" onclick="loginManager()">دخول</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal إضافة/تعديل طبيب -->
+<div class="modal fade" id="doctorFormModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header h-doc">
+                <h5 class="modal-title" id="docFormTitle"><i class="bi bi-person-plus"></i> إضافة طبيب</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="doctorForm">
+                    <input type="hidden" id="docEditId">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">اسم الطبيب</label>
+                        <input type="text" id="docName" class="form-control" required placeholder="د. أحمد محمد">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">التخصص</label>
+                        <input type="text" id="docSpec" class="form-control" required placeholder="أسنان عامة">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">رقم الهاتف</label>
+                        <input type="tel" id="docPhone" class="form-control" required placeholder="0500000000">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">كلمة المرور (لدخول الطبيب)</label>
+                        <input type="text" id="docPwd" class="form-control" required placeholder="مثال: ahmed123">
+                        <small class="text-muted">سيستخدمها الطبيب للدخول إلى حسابه</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-primary" onclick="saveDoctor()"><i class="bi bi-save"></i> حفظ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal ملاحظات الطبيب -->
+<div class="modal fade" id="notesModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header h-notes">
+                <h5 class="modal-title"><i class="bi bi-journal-medical"></i> ملاحظات الطبيب</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="notesInfo" class="alert alert-light border mb-3"></div>
+                <div class="quick-notes">
+                    <button type="button" class="qn-btn" onclick="addQN('تحتاج متابعة')">🔄 متابعة</button>
+                    <button type="button" class="qn-btn" onclick="addQN('وصف علاج')">💊 علاج</button>
+                    <button type="button" class="qn-btn" onclick="addQN('تحويل لأخصائي')">👨‍⚕️ تحويل</button>
+                    <button type="button" class="qn-btn" onclick="addQN('حالة مستقرة')">✅ مستقرة</button>
+                    <button type="button" class="qn-btn" onclick="addQN('يحتاج أشعة')">📷 أشعة</button>
+                    <button type="button" class="qn-btn" onclick="addQN('حساسية من أدوية')">⚠️ حساسية</button>
+                </div>
+                <textarea id="notesText" class="form-control" style="min-height:150px;border-radius:10px" placeholder="ملاحظاتك السرية..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-warning" onclick="saveNotes()"><i class="bi bi-save"></i> حفظ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal تاريخ المريض -->
+<div class="modal fade" id="histModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-clock-history"></i> تاريخ المريض</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="histContent"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal تغيير كلمة مرور المدير -->
+<div class="modal fade" id="mgrPwdModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header h-mgr">
+                <h5 class="modal-title"><i class="bi bi-key"></i> تغيير كلمة المرور</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3"><label class="form-label">الحالية</label><input type="password" id="mgrCurPwd" class="form-control"></div>
+                <div class="mb-3"><label class="form-label">الجديدة</label><input type="password" id="mgrNewPwd" class="form-control"></div>
+                <div class="mb-3"><label class="form-label">تأكيد</label><input type="password" id="mgrConfPwd" class="form-control"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-danger" onclick="changeManagerPwd()">حفظ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// ============================================================
+// 🔥 مفاتيح Firebase
+// ============================================================
+const firebaseConfig = {
+    apiKey: "AIzaSyC91rQQX50fTzlVacM-llCCGKWgeJZngQ8",
+    authDomain: "dental-clinic-bbd0a.firebaseapp.com",
+    projectId: "dental-clinic-bbd0a",
+    storageBucket: "dental-clinic-bbd0a.firebasestorage.app",
+    messagingSenderId: "522850612802",
+    appId: "1:522850612802:web:6b893d3becf3b0fa871fdb",
+    measurementId: "G-5D6WT6H1D2"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const apptsCol = db.collection('appointments');
+const docsCol = db.collection('doctors');
+const settingsCol = db.collection('settings');
+
+let doctorsCache = [];
+let currentDoctorId = null;
+let currentNotesId = null;
+
+// ============================================================
+// الإعدادات (كلمة مرور المدير)
+// ============================================================
+async function getManagerPassword() {
+    const doc = await settingsCol.doc('manager').get();
+    if (doc.exists) return doc.data().password || 'admin123';
+    await settingsCol.doc('manager').set({ password: 'admin123' });
+    return 'admin123';
+}
+
+async function setManagerPassword(pwd) {
+    await settingsCol.doc('manager').set({ password: pwd }, { merge: true });
+}
+
+// ============================================================
+// إدارة الأطباء
+// ============================================================
+async function loadDoctors() {
+    const snap = await docsCol.orderBy('name').get();
+    doctorsCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    return doctorsCache;
+}
+
+function getDocName(docId) {
+    if (!docId) return 'غير محدد';
+    const d = doctorsCache.find(x => x.id === docId);
+    return d ? d.name : 'غير محدد';
+}
+
+async function addDefaultDocs() {
+    const snap = await docsCol.get();
+    if (snap.empty) {
+        await docsCol.add({ name: 'د. أحمد محمد', specialty: 'أسنان عامة', phone: '0500000000', password: 'ahmed123', created_at: new Date().toISOString() });
+        await docsCol.add({ name: 'د. سارة علي', specialty: 'تقويم الأسنان', phone: '0500000001', password: 'sara123', created_at: new Date().toISOString() });
+    }
+}
+
+// ============================================================
+// إدارة المواعيد
+// ============================================================
+async function addAppt(data) {
+    const ref = await apptsCol.add(data);
+    return ref.id;
+}
+
+async function getAllAppts() {
+    const snap = await apptsCol.get();
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+async function getAppt(id) {
+    const doc = await apptsCol.doc(id).get();
+    return doc.exists ? { id: doc.id, ...doc.data() } : null;
+}
+
+async function updateAppt(id, data) {
+    await apptsCol.doc(id).update(data);
+}
+
+async function deleteAppt(id) {
+    await apptsCol.doc(id).delete();
+}
+
+async function getApptsByPhone(phone) {
+    const snap = await apptsCol.where('phone', '==', phone).get();
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+async function checkConflict(date, time) {
+    const snap = await apptsCol.where('date', '==', date).get();
+    return snap.docs.find(d => d.data().time === time && d.data().status !== 'cancelled') || null;
+}
+
+// ✅ تم التحسين لتجنب خطأ Firebase Batch (أكثر من 500 سجل)
+async function clearAllAppts() {
+    const snap = await apptsCol.get();
+    const batch = db.batch();
+    let count = 0;
+    for (const d of snap.docs) {
+        batch.delete(d.ref);
+        count++;
+        if (count === 500) {
+            await batch.commit();
+            batch = db.batch();
+            count = 0;
+        }
+    }
+    if (count > 0) await batch.commit();
+}
+
+async function clearAllDoctors() {
+    const snap = await docsCol.get();
+    const batch = db.batch();
+    let count = 0;
+    for (const d of snap.docs) {
+        batch.delete(d.ref);
+        count++;
+        if (count === 500) {
+            await batch.commit();
+            batch = db.batch();
+            count = 0;
+        }
+    }
+    if (count > 0) await batch.commit();
+}
+
+// ============================================================
+// الواجهة - التنقل
+// ============================================================
+function showPage(id) {
+    document.querySelectorAll('#landingPage,#patientPage,#doctorPage,#managerPage').forEach(p => p.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+    window.scrollTo(0, 0);
+    if (id === 'patientPage') { populateDates(); populateTimes(); populateDocSelect(); }
+    else if (id === 'doctorPage') { renderDocAppts(); }
+    else if (id === 'managerPage') { renderManagerPage(); }
+}
+
+function toast(msg, type = 'success', box = 'patientToast') {
+    const c = document.getElementById(box);
+    const t = document.createElement('div');
+    t.className = `alert alert-${type} alert-dismissible fade show shadow`;
+    t.innerHTML = `<strong>${type === 'success' ? '✅' : type === 'danger' ? '❌' : '⚠️'}</strong> ${msg}<button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>`;
+    c.appendChild(t);
+    setTimeout(() => t.remove(), 4000);
+}
+
+function populateDates() {
+    const s = document.getElementById('p_date');
+    s.innerHTML = '<option value="">اختر التاريخ</option>';
+    const days = ["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+    const today = new Date();
+    for (let i = 1; i <= 14; i++) {
+        const d = new Date(today); d.setDate(today.getDate() + i);
+        const ds = d.toISOString().split('T')[0];
+        s.innerHTML += `<option value="${ds}">${days[d.getDay()]} - ${ds}</option>`;
+    }
+}
+
+function populateTimes() {
+    const s = document.getElementById('p_time');
+    s.innerHTML = '<option value="">اختر الوقت</option>';
+    ["09:00 ص","10:00 ص","11:00 ص","12:00 م","01:00 م","02:00 م","03:00 م","04:00 م","05:00 م"].forEach(t => {
+        s.innerHTML += `<option value="${t}">${t}</option>`;
+    });
+}
+
+function populateDocSelect() {
+    const s = document.getElementById('p_doctor');
+    s.innerHTML = '<option value="">اختر الطبيب</option>';
+    doctorsCache.forEach(d => { s.innerHTML += `<option value="${d.id}">${d.name} - ${d.specialty}</option>`; });
+}
+
+async function checkHistory() {
+    const v = document.getElementById('p_visit').value;
+    const c = document.getElementById('prevContainer');
+    const el = document.getElementById('prevVisits');
+    if (v === 'followup') {
+        c.classList.remove('hidden');
+        const phone = document.getElementById('p_phone').value.trim();
+        if (!phone) { el.innerHTML = '<small class="text-danger">⚠️ أدخل رقم الهاتف أولاً</small>'; return; }
+        const appts = (await getApptsByPhone(phone)).filter(a => a.status !== 'cancelled').sort((a, b) => b.created_at.localeCompare(a.created_at));
+        if (!appts.length) { el.innerHTML = '<small class="text-warning">⚠️ لا توجد مواعيد سابقة</small>'; }
+        else { el.innerHTML = '<strong>مواعيدك السابقة:</strong><br>' + appts.slice(0, 3).map(a => `• ${a.date} - ${a.time} (${a.service})`).join('<br>'); }
+    } else { c.classList.add('hidden'); }
+}
+
+document.getElementById('p_phone').addEventListener('input', function() {
+    if (document.getElementById('p_visit').value === 'followup') checkHistory();
+});
+
+// ============================================================
+// حجز موعد
+// ============================================================
+document.getElementById('bookingForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const conflict = await checkConflict(document.getElementById('p_date').value, document.getElementById('p_time').value);
+    if (conflict) { toast('هذا الموعد محجوز مسبقاً!', 'danger'); return; }
+
+    const apptData = {
+        patient_name: document.getElementById('p_name').value.trim(),
+        phone: document.getElementById('p_phone').value.trim(),
+        doctor_id: document.getElementById('p_doctor').value,
+        visit_type: document.getElementById('p_visit').value,
+        date: document.getElementById('p_date').value,
+        time: document.getElementById('p_time').value,
+        service: document.getElementById('p_service').value,
+        notes: document.getElementById('p_notes').value.trim(),
+        doctor_notes: '',
+        status: 'pending',
+        created_at: new Date().toISOString()
+    };
+
+    try {
+        await addAppt(apptData);
+        toast('تم حجز موعدك بنجاح! \nسيتم التواصل معك لتأكيد الموعد.', 'success');
+        this.reset();
+        document.getElementById('prevContainer').classList.add('hidden');
+    } catch (err) {
+        toast('خطأ: ' + err.message, 'danger');
+    }
+});
+
+// ============================================================
+// دخول الطبيب
+// ============================================================
+async function showDoctorLogin() {
+    await loadDoctors();
+    const sel = document.getElementById('docLoginName');
+    sel.innerHTML = '<option value="">اختر اسمك</option>';
+    doctorsCache.forEach(d => { sel.innerHTML += `<option value="${d.id}">${d.name}</option>`; });
+    document.getElementById('docLoginPwd').value = '';
+    new bootstrap.Modal(document.getElementById('doctorLoginModal')).show();
+}
+
+async function loginDoctor() {
+    const docId = document.getElementById('docLoginName').value;
+    const pwd = document.getElementById('docLoginPwd').value;
+    if (!docId) { toast('اختر اسمك أولاً!', 'danger', 'doctorToast'); return; }
+    
+    const doctor = doctorsCache.find(d => d.id === docId);
+    if (!doctor) { toast('طبيب غير موجود!', 'danger', 'doctorToast'); return; }
+    if (pwd !== doctor.password) { toast('كلمة المرور غير صحيحة!', 'danger', 'doctorToast'); return; }
+    
+    currentDoctorId = docId;
+    bootstrap.Modal.getInstance(document.getElementById('doctorLoginModal')).hide();
+    document.getElementById('currentDoctorName').textContent = `مرحباً ${doctor.name} - ${doctor.specialty}`;
+    showPage('doctorPage');
+    toast(`مرحباً بك ${doctor.name}! 👨‍⚕️`, 'success', 'doctorToast');
+}
+
+function logoutDoctor() { 
+    currentDoctorId = null;
+    showPage('landingPage'); 
+}
+
+// ============================================================
+// دخول المدير
+// ============================================================
+function showManagerLogin() {
+    document.getElementById('mgrLoginPwd').value = '';
+    new bootstrap.Modal(document.getElementById('managerLoginModal')).show();
+}
+
+async function loginManager() {
+    const pwd = document.getElementById('mgrLoginPwd').value;
+    const saved = await getManagerPassword();
+    if (pwd === saved) {
+        bootstrap.Modal.getInstance(document.getElementById('managerLoginModal')).hide();
+        showPage('managerPage');
+        toast('مرحباً بك أيها المدير! 🛡️', 'success', 'managerToast');
+    } else {
+        toast('كلمة المرور غير صحيحة!', 'danger', 'managerToast');
+    }
+}
+
+function logoutManager() { showPage('landingPage'); }
+
+// ============================================================
+// صفحة المدير - إدارة الأطباء
+// ============================================================
+async function renderManagerPage() {
+    await loadDoctors();
+    const appts = await getAllAppts();
+    const today = new Date().toISOString().split('T')[0];
+    
+    document.getElementById('m_doctors').textContent = doctorsCache.length;
+    document.getElementById('m_appts').textContent = appts.length;
+    document.getElementById('m_today').textContent = appts.filter(a => a.date === today).length;
+    
+    const docsList = document.getElementById('managerDocsList');
+    if (doctorsCache.length === 0) {
+        docsList.innerHTML = '<p class="text-center text-muted">لا يوجد أطباء</p>';
+    } else {
+        docsList.innerHTML = doctorsCache.map(d => `
+            <div class="doc-card">
+                <div>
+                    <h5><i class="bi bi-person-badge"></i> ${d.name}</h5>
+                    <small><i class="bi bi-bandaid"></i> ${d.specialty} | <i class="bi bi-telephone"></i> ${d.phone}</small><br>
+                    <small class="text-muted">
+                        <i class="bi bi-key"></i> كلمة المرور: 
+                        <strong id="pwd-${d.id}">••••••</strong>
+                        <button class="btn btn-sm btn-outline-secondary ms-1" onclick="togglePwd('${d.id}', '${d.password}')" id="btn-${d.id}">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </small>
+                </div>
+                <div class="doc-actions">
+                    <button class="btn btn-sm btn-outline-primary" onclick="editDoctor('${d.id}')"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteDoctor('${d.id}')"><i class="bi bi-trash"></i></button>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    const apptsDiv = document.getElementById('managerAppts');
+    if (appts.length === 0) {
+        apptsDiv.innerHTML = '<p class="text-center text-muted">لا توجد مواعيد</p>';
+    } else {
+        apptsDiv.innerHTML = appts.sort((a, b) => a.date.localeCompare(b.date)).map(a => renderCard(a, 'manager')).join('');
+    }
+}
+
+function togglePwd(id, pwd) {
+    const pwdEl = document.getElementById('pwd-' + id);
+    const btnEl = document.getElementById('btn-' + id);
+    if (pwdEl.textContent === '••••••') {
+        pwdEl.textContent = pwd;
+        btnEl.innerHTML = '<i class="bi bi-eye-slash"></i>';
+    } else {
+        pwdEl.textContent = '••••••';
+        btnEl.innerHTML = '<i class="bi bi-eye"></i>';
+    }
+}
+
+function showAddDoctorForm() {
+    document.getElementById('docFormTitle').innerHTML = '<i class="bi bi-person-plus"></i> إضافة طبيب';
+    document.getElementById('docEditId').value = '';
+    document.getElementById('docName').value = '';
+    document.getElementById('docSpec').value = '';
+    document.getElementById('docPhone').value = '';
+    document.getElementById('docPwd').value = '';
+    new bootstrap.Modal(document.getElementById('doctorFormModal')).show();
+}
+
+async function editDoctor(id) {
+    const doc = doctorsCache.find(d => d.id === id);
+    if (!doc) return;
+    document.getElementById('docFormTitle').innerHTML = '<i class="bi bi-pencil"></i> تعديل طبيب';
+    document.getElementById('docEditId').value = id;
+    document.getElementById('docName').value = doc.name;
+    document.getElementById('docSpec').value = doc.specialty;
+    document.getElementById('docPhone').value = doc.phone;
+    document.getElementById('docPwd').value = doc.password;
+    new bootstrap.Modal(document.getElementById('doctorFormModal')).show();
+}
+
+async function saveDoctor() {
+    const id = document.getElementById('docEditId').value;
+    const data = {
+        name: document.getElementById('docName').value.trim(),
+        specialty: document.getElementById('docSpec').value.trim(),
+        phone: document.getElementById('docPhone').value.trim(),
+        password: document.getElementById('docPwd').value.trim()
+    };
+    
+    if (!data.name || !data.specialty || !data.phone || !data.password) {
+        toast('جميع الحقول مطلوبة!', 'danger', 'managerToast');
+        return;
+    }
+    
+    try {
+        if (id) {
+            await docsCol.doc(id).update(data);
+            toast('تم تعديل الطبيب بنجاح', 'success', 'managerToast');
+        } else {
+            data.created_at = new Date().toISOString();
+            await docsCol.add(data);
+            toast('تم إضافة الطبيب بنجاح 👨‍⚕️', 'success', 'managerToast');
+        }
+        bootstrap.Modal.getInstance(document.getElementById('doctorFormModal')).hide();
+        renderManagerPage();
+    } catch (e) {
+        toast('خطأ: ' + e.message, 'danger', 'managerToast');
+    }
+}
+
+async function deleteDoctor(id) {
+    if (!confirm('حذف هذا الطبيب؟')) return;
+    try {
+        await docsCol.doc(id).delete();
+        toast('تم حذف الطبيب', 'warning', 'managerToast');
+        renderManagerPage();
+    } catch (e) {
+        toast('خطأ: ' + e.message, 'danger', 'managerToast');
+    }
+}
+
+async function changeManagerPwd() {
+    const cur = document.getElementById('mgrCurPwd').value;
+    const nw = document.getElementById('mgrNewPwd').value;
+    const cf = document.getElementById('mgrConfPwd').value;
+    const saved = await getManagerPassword();
+    if (cur !== saved) { toast('كلمة المرور الحالية غير صحيحة!', 'danger', 'managerToast'); return; }
+    if (nw.length < 4) { toast('يجب أن تكون 4 أحرف على الأقل', 'danger', 'managerToast'); return; }
+    if (nw !== cf) { toast('غير متطابقتين!', 'danger', 'managerToast'); return; }
+    await setManagerPassword(nw);
+    bootstrap.Modal.getInstance(document.getElementById('mgrPwdModal')).hide();
+    document.getElementById('mgrCurPwd').value = '';
+    document.getElementById('mgrNewPwd').value = '';
+    document.getElementById('mgrConfPwd').value = '';
+    toast('تم تغيير كلمة المرور', 'success', 'managerToast');
+}
+
+function showChangeManagerPwd() { new bootstrap.Modal(document.getElementById('mgrPwdModal')).show(); }
+
+// ============================================================
+// صفحة الطبيب - عرض المواعيد
+// ============================================================
+async function renderDocAppts() {
+    const sf = document.getElementById('fStatus').value;
+    const df = document.getElementById('fDate').value;
+    const search = document.getElementById('fSearch').value.trim().toLowerCase();
+
+    let appts = await getAllAppts();
+
+    if (sf !== 'all') appts = appts.filter(a => a.status === sf);
+    if (df) appts = appts.filter(a => a.date === df);
+    if (search) appts = appts.filter(a => a.patient_name.toLowerCase().includes(search) || a.phone.includes(search));
+
+    appts.sort((a, b) => a.date === b.date ? a.time.localeCompare(b.time) : a.date.localeCompare(b.date));
+
+    const c = document.getElementById('docAppts');
+    c.innerHTML = appts.length ? appts.map(a => renderCard(a, 'doctor')).join('') : '<p class="text-muted text-center py-4">لا توجد مواعيد</p>';
+    updateStats(appts);
+}
+
+function renderCard(app, role) {
+    const sl = { pending: 'قيد الانتظار', confirmed: 'مؤكد', completed: 'منجز', cancelled: 'ملغى' };
+    const vl = app.visit_type === 'followup' ? 'متابعة' : 'زيارة أولى';
+    const vc = app.visit_type === 'followup' ? 'followup' : 'first';
+    const hn = app.doctor_notes && app.doctor_notes.trim();
+    const dn = getDocName(app.doctor_id);
+
+    let actions = '';
+    if (role === 'doctor' || role === 'manager') {
+        actions = `<div class="appt-actions">
+            ${app.status === 'pending' ? `<button class="btn btn-success btn-sm" onclick="updStatus('${app.id}','confirmed')"><i class="bi bi-check"></i> تأكيد</button>` : ''}
+            ${app.status === 'confirmed' ? `<button class="btn btn-secondary btn-sm" onclick="updStatus('${app.id}','completed')"><i class="bi bi-check-all"></i> إنهاء</button>` : ''}
+            ${app.status !== 'cancelled' ? `<button class="btn btn-danger btn-sm" onclick="updStatus('${app.id}','cancelled')"><i class="bi bi-x"></i> إلغاء</button>` : ''}
+            <button class="btn btn-warning btn-sm" onclick="showNotes('${app.id}')"><i class="bi bi-journal-medical"></i> ${hn ? 'تعديل' : 'ملاحظات'}</button>
+            ${app.status === 'confirmed' ? `<button class="btn whatsapp-btn btn-sm" onclick="sendWhatsApp('${app.id}')"><i class="bi bi-whatsapp"></i> واتساب</button>` : ''}
+            <button class="btn btn-info btn-sm" onclick="showHist('${app.phone}')"><i class="bi bi-clock-history"></i> تاريخ</button>
+            ${role === 'manager' ? `<button class="btn btn-outline-danger btn-sm" onclick="delAppt('${app.id}')"><i class="bi bi-trash"></i></button>` : ''}
+        </div>`;
+    }
+
+    const notesPrev = hn && (role === 'doctor' || role === 'manager') ? `<div class="notes-preview"><i class="bi bi-journal-medical"></i> <strong>ملاحظات:</strong> ${app.doctor_notes.substring(0, 100)}${app.doctor_notes.length > 100 ? '...' : ''}</div>` : '';
+
+    return `<div class="appt-card status-${app.status} ${hn && (role === 'doctor' || role === 'manager') ? 'has-notes' : ''}">
+        <div class="appt-header">
+            <div class="patient-info"><h5><i class="bi bi-person"></i> ${app.patient_name}</h5><small><i class="bi bi-telephone"></i> ${app.phone}</small></div>
+            <div><span class="badge-visit ${vc}">${vl}</span> <span class="badge-status ${app.status}">${sl[app.status]}</span></div>
+        </div>
+        <div class="appt-details">
+            <div class="detail-item"><i class="bi bi-calendar"></i> ${app.date}</div>
+            <div class="detail-item"><i class="bi bi-clock"></i> ${app.time}</div>
+            <div class="detail-item"><i class="bi bi-bandaid"></i> ${app.service}</div>
+            <div class="detail-item"><i class="bi bi-person-badge"></i> <span class="badge-doc">👨‍⚕️ ${dn}</span></div>
+        </div>
+        ${app.notes ? `<div class="detail-item"><i class="bi bi-chat-text"></i> ${app.notes}</div>` : ''}
+        ${notesPrev}${actions}
+    </div>`;
+}
+
+// ============================================================
+// إرسال واتساب
+// ============================================================
+async function sendWhatsApp(id) {
+    const app = await getAppt(id);
+    if (!app) return;
+    
+    const doctorName = getDocName(app.doctor_id);
+    const message = `مرحباً ${app.patient_name}،
+
+✅ تم تأكيد موعدك في عيادة الابتسامة:
+
+📅 التاريخ: ${app.date}
+🕐 الوقت: ${app.time}
+👨‍⚕️ الطبيب: ${doctorName}
+🩺 الخدمة: ${app.service}
+📋 نوع الزيارة: ${app.visit_type === 'followup' ? 'متابعة' : 'زيارة أولى'}
+
+نرجو الحضور في الموعد المحدد.
+مع تحيات، عيادة الابتسامة 🦷`;
+
+    let phone = app.phone.replace(/\s+/g, '').replace(/[-()+]/g, '');
+    if (!phone.startsWith('966') && !phone.startsWith('00')) {
+        phone = '966' + phone;
+    }
+    phone = phone.replace(/^00/, '');
+    
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+    
+    toast('تم فتح واتساب ', 'success', 'doctorToast');
+}
+
+// ============================================================
+// إجراءات الطبيب/المدير
+// ============================================================
+async function updStatus(id, status) {
+    try { 
+        await updateAppt(id, { status }); 
+        renderDocAppts(); 
+        if (!document.getElementById('managerPage').classList.contains('hidden')) renderManagerPage();
+        toast('تم تحديث الحالة', 'success', 'doctorToast'); 
+    }
+    catch (e) { toast('خطأ: ' + e.message, 'danger', 'doctorToast'); }
+}
+
+async function delAppt(id) {
+    if (!confirm('حذف هذا الموعد؟')) return;
+    try { await deleteAppt(id); renderManagerPage(); toast('تم الحذف', 'warning', 'managerToast'); }
+    catch (e) { toast('خطأ: ' + e.message, 'danger', 'managerToast'); }
+}
+
+// ملاحظات
+async function showNotes(id) {
+    const app = await getAppt(id);
+    if (!app) return;
+    currentNotesId = id;
+    document.getElementById('notesInfo').innerHTML = `<strong>${app.patient_name}</strong><br><small>${app.phone} | ${app.date} ${app.time}</small>`;
+    document.getElementById('notesText').value = app.doctor_notes || '';
+    new bootstrap.Modal(document.getElementById('notesModal')).show();
+}
+
+function addQN(t) {
+    const el = document.getElementById('notesText');
+    el.value = el.value.trim() ? el.value + '\n• ' + t : '• ' + t;
+}
+
+async function saveNotes() {
+    if (!currentNotesId) return;
+    try {
+        await updateAppt(currentNotesId, { doctor_notes: document.getElementById('notesText').value.trim() });
+        bootstrap.Modal.getInstance(document.getElementById('notesModal')).hide();
+        renderDocAppts();
+        if (!document.getElementById('managerPage').classList.contains('hidden')) renderManagerPage();
+        toast('تم حفظ الملاحظات ', 'success', 'doctorToast');
+    } catch (e) { toast('خطأ: ' + e.message, 'danger', 'doctorToast'); }
+    currentNotesId = null;
+}
+
+// تاريخ المريض
+async function showHist(phone) {
+    const appts = (await getApptsByPhone(phone)).sort((a, b) => b.created_at.localeCompare(a.created_at));
+    const c = document.getElementById('histContent');
+    const sl = { pending: 'انتظار', confirmed: 'مؤكدة', completed: 'منجزة', cancelled: 'ملغاة' };
+    if (!appts.length) { c.innerHTML = '<p class="text-center text-muted">لا يوجد تاريخ</p>'; }
+    else {
+        let h = `<h5>${appts[0].patient_name}</h5><p class="text-muted">${phone}</p><hr><h6>الزيارات: ${appts.length}</h6><div class="mt-3">`;
+        appts.forEach((a, i) => {
+            const hn = a.doctor_notes && a.doctor_notes.trim();
+            h += `<div class="border rounded p-3 mb-2"><div class="d-flex justify-content-between flex-wrap gap-2 mb-2"><strong>زيارة #${appts.length - i}</strong><div><span class="badge-visit ${a.visit_type === 'followup' ? 'followup' : 'first'}">${a.visit_type === 'followup' ? 'متابعة' : 'أولى'}</span> <span class="badge-status ${a.status}">${sl[a.status]}</span> <span class="badge-doc">${getDocName(a.doctor_id)}</span></div></div><div class="row"><div class="col-6"><small>📅 ${a.date}</small></div><div class="col-6"><small>🕐 ${a.time}</small></div><div class="col-12 mt-1"><small>🩺 ${a.service}</small></div>${a.notes ? `<div class="col-12 mt-1"><small>💬 ${a.notes}</small></div>` : ''}${hn ? `<div class="col-12 mt-2"><div class="notes-preview">📝 ${a.doctor_notes}</div></div>` : ''}</div></div>`;
+        });
+        h += '</div>'; c.innerHTML = h;
+    }
+    new bootstrap.Modal(document.getElementById('histModal')).show();
+}
+
+// إحصائيات
+function updateStats(appts) {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('d_total').textContent = appts.length;
+    document.getElementById('d_confirmed').textContent = appts.filter(a => a.status === 'confirmed').length;
+    document.getElementById('d_pending').textContent = appts.filter(a => a.status === 'pending').length;
+    document.getElementById('d_today').textContent = appts.filter(a => a.date === today).length;
+    document.getElementById('d_notes').textContent = appts.filter(a => a.doctor_notes && a.doctor_notes.trim()).length;
+}
+
+// تصدير/استيراد
+async function exportData() {
+    try {
+        const appts = await getAllAppts();
+        const docs = await loadDoctors();
+        const data = { appointments: appts, doctors: docs, export_date: new Date().toISOString() };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = `dental_backup_${new Date().toISOString().split('T')[0]}.json`; a.click();
+        toast('تم التصدير', 'success', 'managerToast');
+    } catch (e) { toast('خطأ: ' + e.message, 'danger', 'managerToast'); }
+}
+
+// ✅ تم إصلاح هذه الدالة بالكامل لتجنب أخطاء Syntax
+async function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            const isReplace = confirm('موافق = استبدال الكل (حذف البيانات القديمة)\nإلغاء = إضافة فقط (دمج مع البيانات الحالية)');
+            
+            if (isReplace) {
+                await clearAllAppts();
+                await clearAllDoctors();
+            }
+            
+            if (data.appointments) {
+                for (const a of data.appointments) { 
+                    delete a.id; 
+                    await addAppt(a); 
+                }
+            }
+            if (data.doctors) {
+                for (const d of data.doctors) { 
+                    delete d.id; 
+                    await docsCol.add(d); 
+                }
+            }
+            
+            await loadDoctors(); 
+            if (!document.getElementById('managerPage').classList.contains('hidden')) {
+                renderManagerPage();
+            }
+            toast('تم الاستيراد بنجاح', 'success', 'managerToast');
+        } catch (err) { 
+            console.error('Import error:', err);
+            toast('خطأ في الاستيراد: ' + err.message, 'danger', 'managerToast'); 
+        }
+    };
+    reader.readAsText(file); 
+    event.target.value = ''; // إعادة تعيين حقل الملف
+}
+
+// ============================================================
+// التهيئة
+// ============================================================
+window.addEventListener('DOMContentLoaded', async () => {
+    try {
+        await addDefaultDocs();
+        await loadDoctors();
+
+        document.getElementById('dbStatus').className = 'db-status connected';
+        document.getElementById('dbStatus').innerHTML = '🔥 Firebase متصل';
+        document.getElementById('loadingOverlay').classList.add('hidden');
+        document.getElementById('landingPage').classList.remove('hidden');
+
+        console.log('✅ Firebase متصل - الأطباء:', doctorsCache.length);
+    } catch (err) {
+        console.error(err);
+        document.getElementById('loadingOverlay').innerHTML = `<div class="alert alert-danger text-center p-4"><h4>❌ خطأ في الاتصال بـ Firebase</h4><p>${err.message}</p></div>`;
+    }
+});
+</script>
+</body>
+</html>
